@@ -20,4 +20,6 @@ public interface LoreBuf {
     void reset();
 
     int getSize();
+
+    void writeTo(byte[] buffer);
 }

@@ -94,6 +94,11 @@ public class SimpleLoreBuf implements LoreBuf {
         return size;
     }
 
+    @Override
+    public void writeTo(byte[] buffer) {
+        System.arraycopy(byteBuffer.array(), 0, buffer, 0, size);
+    }
+
     private void checkAndAlloc(int size) {
         this.size += size;
         if (this.size > this.byteBuffer.capacity()) {
