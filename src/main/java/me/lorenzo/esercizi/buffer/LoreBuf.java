@@ -21,5 +21,5 @@ public interface LoreBuf {
 
     int getSize();
 
-    void writeTo(byte[] buffer);
+    byte[] getBytes();
 }

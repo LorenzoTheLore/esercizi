@@ -11,8 +11,18 @@ public class SimpleLoreBuf implements LoreBuf {
 
     SimpleLoreBuf() {
         this.byteBuffer = ByteBuffer.allocate(4);
-        this.size = 0;
+        this.size = 4;
         this.readerIndex = 0;
+
+        byteBuffer.putInt(0, size);
+    }
+
+    SimpleLoreBuf(byte[] array) {
+        this.byteBuffer = ByteBuffer.allocate(array.length);
+        this.size = array.length;
+        this.readerIndex = 0;
+
+        byteBuffer.put(array);
     }
 
     @Override
@@ -62,19 +72,19 @@ public class SimpleLoreBuf implements LoreBuf {
         byte[] value = string.getBytes();
         int length = value.length;
 
-        checkAndAlloc(4 + length);
-
         writeInt(length);
+
+        checkAndAlloc(length);
         byteBuffer.put(value);
     }
 
     @Override
     public String readString() {
-        int length = byteBuffer.getInt(readerIndex);
+        int length = readInt();
         char[] value = new char[length];
 
         for (int i = 0; i < length; i++) {
-            value[i] = (char) byteBuffer.get((readerIndex + length) + i);
+            value[i] = (char) byteBuffer.get(readerIndex + i);
         }
 
         readerIndex += (4 + length);
@@ -95,8 +105,10 @@ public class SimpleLoreBuf implements LoreBuf {
     }
 
     @Override
-    public void writeTo(byte[] buffer) {
+    public byte[] getBytes() {
+        byte[] buffer = new byte[size];
         System.arraycopy(byteBuffer.array(), 0, buffer, 0, size);
+        return buffer;
     }
 
     private void checkAndAlloc(int size) {
